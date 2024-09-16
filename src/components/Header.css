@@ -1,0 +1,68 @@
+.header {
+    background: #ec407a;
+    color: white;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+}
+
+.nav-list li {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.nav-list a {
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-list a:hover {
+    text-decoration: underline;
+    color: #f48fb1;
+}
+
+.nav-icon {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.cart-count {
+    background-color: #ff4081;
+    border-radius: 50%;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+    color: #ffffff;
+}
