@@ -1,9 +1,7 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
-import Login from './components/Login'; // Import the Login component
-import Register from './components/Register'; // Import the Register component
-import Profile from './components/Profile'; // Import the Profile component
+import Auth from './components/Auth'; 
 
 const ProductList = lazy(() => import('./components/ProductList'));
 const ProductDetail = lazy(() => import('./components/ProductDetail'));
@@ -13,11 +11,30 @@ const About = lazy(() => import('./components/About'));
 const NotFound = lazy(() => import('./components/NotFound'));
 
 function App() {
-  const [token, setToken] = React.useState(null); // Manage the token state
+  const [token, setToken] = useState(null); 
+  const [user, setUser] = useState(null); 
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          const response = await fetch('http://localhost:5000/profile', {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          });
+          const data = await response.json();
+          setUser(data); 
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+    fetchUserData();
+  }, [token]);
 
   return (
     <Router>
-      <Header />
+      <Header user={user} /> 
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<ProductList />} />
@@ -25,9 +42,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} /> 
           <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login setToken={setToken} />} /> {/* Add Login route */}
-          <Route path="/register" element={<Register />} /> {/* Add Register route */}
-          <Route path="/profile" element={<Profile />} /> {/* Add Profile route */}
+          <Route path="/auth" element={<Auth setToken={setToken} />} /> 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

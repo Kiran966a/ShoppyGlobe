@@ -6,15 +6,19 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000; 
+
 // Middleware
 app.use(cors());
 app.use(express.json()); 
+
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('MongoDB connection error:', error));
+
 // Product schema
 const productSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -22,16 +26,20 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   images: { type: [String], required: true },
 });
+
 // Product model
 const Product = mongoose.model('Product', productSchema);
+
 // Cart schema
 const cartItemSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true, min: 1 },
 });
+
 // Cart model
 const CartItem = mongoose.model('CartItem', cartItemSchema);
+
 // User schema
 const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
@@ -40,8 +48,10 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
+
 // User model
 const User = mongoose.model('User', userSchema);
+
 // Middleware to authenticate token
 const authenticateToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -53,6 +63,7 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
 // API route to get all products
 app.get('/api/products', async (req, res) => {
   try {
@@ -62,6 +73,7 @@ app.get('/api/products', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 // API route to get a single product by ID
 app.get('/api/products/:id', async (req, res) => {
   try {
@@ -74,15 +86,12 @@ app.get('/api/products/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 // API route to add a new product
 app.post('/api/products', async (req, res) => {
   const { title, description, price, images } = req.body;
-  const newProduct = new Product({
-    title,
-    description,
-    price,
-    images,
-  });
+  const newProduct = new Product({ title, description, price, images });
+
   try {
     const savedProduct = await newProduct.save();
     res.status(201).json(savedProduct);
@@ -90,14 +99,12 @@ app.post('/api/products', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 // API route to add a product to the shopping cart
 app.post('/api/cart', authenticateToken, async (req, res) => {
   const { productId, quantity } = req.body;
-  const newCartItem = new CartItem({
-    userId: req.user.id,
-    productId,
-    quantity,
-  });
+  const newCartItem = new CartItem({ userId: req.user.id, productId, quantity });
+
   try {
     const savedCartItem = await newCartItem.save();
     res.status(201).json(savedCartItem);
@@ -105,6 +112,7 @@ app.post('/api/cart', authenticateToken, async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 // API route to update the quantity of a product in the cart
 app.put('/api/cart/:id', authenticateToken, async (req, res) => {
   const { quantity } = req.body;
@@ -122,6 +130,7 @@ app.put('/api/cart/:id', authenticateToken, async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 // API route to remove a product from the cart
 app.delete('/api/cart/:id', authenticateToken, async (req, res) => {
   try {
@@ -134,11 +143,13 @@ app.delete('/api/cart/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 // User registration
 app.post('/register', async (req, res) => {
   const { fullName, email, phone, username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = new User({ fullName, email, phone, username, password: hashedPassword });
+
   try {
     const savedUser = await newUser.save();
     res.status(201).json({ message: 'User registered successfully!' });
@@ -146,6 +157,7 @@ app.post('/register', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 // User login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -158,20 +170,8 @@ app.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '5h' });
     res.json({ token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-// API route to get user profile
-app.get('/profile', authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -190,6 +190,7 @@ app.post('/api/checkout', authenticateToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 // Seed sample data route
 app.post('/api/seed', async (req, res) => {
   try {
@@ -208,6 +209,7 @@ app.post('/api/seed', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
