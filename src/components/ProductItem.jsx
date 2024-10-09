@@ -11,14 +11,13 @@ const ProductItem = ({ product }) => {
     dispatch(addToCart(product));
   };
   const defaultImage = 'https://via.placeholder.com/300x200'; 
-  // Display the first image or use a placeholder if there's an error
   const imageSrc = imageError || !product.images.length 
     ? defaultImage 
     : product.images[0];
 
   return (
     <div className="product-item">
-      <Link to={`/product/${product.id}`} className="product-link">
+      <Link to={`/product/${product._id}`} className="product-link">
         <img 
           src={imageSrc} 
           alt={product.title} 
@@ -39,7 +38,7 @@ ProductItem.propTypes = {
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired, // Ensure images is an array of strings
+    images: PropTypes.arrayOf(PropTypes.string).isRequired, 
   }).isRequired,
 };
 

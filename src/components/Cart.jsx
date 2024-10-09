@@ -29,7 +29,7 @@ const Cart = () => {
       ) : (
         <div>
           {cartItems.map((item) => (
-            <CartItem key={item.id} item={item} onRemove={handleRemoveFromCart} />
+            <CartItem key={item._id} item={item} onRemove={handleRemoveFromCart} />
           ))}
         </div>
       )}

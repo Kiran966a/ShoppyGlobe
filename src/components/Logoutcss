@@ -1,0 +1,18 @@
+.logout-button {
+  background-color: #ff6f91; /* Pink background */
+  color: white; /* White text */
+  border: none; /* No border */
+  padding: 10px 20px; /* Padding for size */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.logout-button:hover {
+  background-color: #ff3d68; /* Darker pink on hover */
+}
+
+.logout-button:focus {
+  outline: none; /* Remove outline on focus */
+}

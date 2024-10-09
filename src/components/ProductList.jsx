@@ -7,7 +7,6 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching products: {error.message}</p>;
-
   // Filter products based on the search query
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase())

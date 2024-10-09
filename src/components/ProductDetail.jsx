@@ -5,18 +5,20 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../features/cartSlice'; 
 import BackButton from './BackButton'; 
 import './ProductDetail.css';
+
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await axios.get(`https://dummyjson.com/products/${id}`);
+        const response = await axios.get(`http://localhost:5000/api/products/${id}`); 
         setProduct(response.data);
       } catch (err) {
-        setError(err);
+        setError(err.response ? err.response.data.message : 'Error fetching product details.'); 
       }
     };
 
@@ -29,7 +31,7 @@ const ProductDetail = () => {
     }
   };
 
-  if (error) return <p>Error fetching product details.</p>;
+  if (error) return <p>{error}</p>; 
   if (!product) return <p>Loading...</p>;
 
   return (

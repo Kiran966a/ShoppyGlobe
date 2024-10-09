@@ -17,7 +17,7 @@ const CartItem = ({ item, onRemove }) => {
     const newQuantity = parseInt(e.target.value, 10);
     if (newQuantity >= 1) {
       setQuantity(newQuantity);
-      dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+      dispatch(updateQuantity({ id: item._id, quantity: newQuantity }));
     }
   };
 
